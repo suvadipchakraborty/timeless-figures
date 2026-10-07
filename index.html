@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Timeless Figures — Explore the most notable people in history</title>
+  <meta name="description" content="Explore the most notable minds, rulers, and creators in human history.">
+  <meta name="theme-color" content="#F9F6F0">
+
+  <!-- Open Graph / Social -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Timeless Figures">
+  <meta property="og:title" content="Timeless Figures">
+  <meta property="og:description" content="Explore the most notable minds, rulers, and creators in human history.">
+  <meta property="og:url" content="https://timeless-figures.suvadipchakraborty.workers.dev/">
+  <meta property="og:image" content="https://timeless-figures.suvadipchakraborty.workers.dev/preview.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Timeless Figures">
+  <meta name="twitter:description" content="Explore the most notable minds, rulers, and creators in human history.">
+  <meta name="twitter:image" content="https://timeless-figures.suvadipchakraborty.workers.dev/preview.png">
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Timeless Figures">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main id="app">
+    <!-- THE ARCHIVE -->
+    <section id="tab-archive" class="tab is-active" aria-labelledby="archive-title">
+      <header class="masthead">
+        <h1 id="archive-title">Timeless Figures</h1>
+        <p class="tagline">Choose a calling. Meet the people history remembers most.</p>
+      </header>
+
+      <div class="pill-wrap">
+        <div id="pills" class="pills" role="tablist" aria-label="Select occupation"></div>
+      </div>
+
+      <div class="roster-head">
+        <h2 id="roster-title">Select an occupation</h2>
+        <p id="roster-sub" class="roster-sub">Ranked by how many Wikipedia languages cover them.</p>
+      </div>
+
+      <div id="status" class="status" role="status" aria-live="polite" hidden></div>
+      <ol id="roster" class="roster" aria-live="polite"></ol>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="tab-about" class="tab" aria-labelledby="about-title" hidden>
+      <article class="about">
+        <div class="about-mark" aria-hidden="true">🏛️</div>
+        <h1 id="about-title">Timeless Figures</h1>
+        <p class="about-lead">Explore the most notable minds, rulers, and creators in human history.</p>
+
+        <h2>Features</h2>
+        <ul>
+          <li>Dynamic querying of the Wikidata knowledge graph</li>
+          <li>Ranking by global historical notability</li>
+          <li>Integrated Wikipedia biographies</li>
+        </ul>
+
+        <h2>Benefits</h2>
+        <p>A distraction-free, visually beautiful way to learn about history without falling down Wikipedia rabbit holes.</p>
+
+        <h2>Credits</h2>
+        <p>Powered by Wikidata and the MediaWiki REST API. Portraits and text are from Wikimedia projects and remain under their original licenses.</p>
+
+        <div class="install-box">
+          <button id="install-btn" class="btn-primary" type="button">Install App</button>
+          <p id="install-hint" class="install-hint"></p>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <!-- DOSSIER MODAL -->
+  <div id="dossier" class="dossier" role="dialog" aria-modal="true" aria-labelledby="dossier-name" aria-hidden="true">
+    <div class="dossier-bar">
+      <button id="dossier-close" class="icon-btn" type="button" aria-label="Close dossier">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button id="dossier-share" class="icon-btn" type="button" aria-label="Share this figure">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 15V3m0 0L8 7m4-4l4 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+    <div class="dossier-scroll" id="dossier-scroll">
+      <div id="dossier-body" class="dossier-body"></div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <nav class="bottom-nav" aria-label="Main">
+    <button class="nav-btn is-active" data-tab="archive" type="button" aria-current="page">
+      <span class="nav-ico" aria-hidden="true">🏛️</span><span>The Archive</span>
+    </button>
+    <button class="nav-btn" data-tab="about" type="button">
+      <span class="nav-ico" aria-hidden="true">ℹ️</span><span>About</span>
+    </button>
+  </nav>
+
+  <script src="app.js"></script>
+</body>
+</html>
