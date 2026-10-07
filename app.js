@@ -9,8 +9,10 @@ const ROSTER_SIZE = 20;
 
 // Occupation label -> Wikidata Q-code
 const OCCUPATIONS = {
-  'King': 'Q28003',
-  'Queen': 'Q16511533',
+  // Kings/Queens: Wikidata rarely tags people as "king"/"queen" directly, so we use
+  // occupation "monarch" (Q116) + "king" (Q12097) and split by gender.
+  'King': { occ: ['Q12097', 'Q116'], gender: 'Q6581097', exclude: 'Q39018' },
+  'Queen': { occ: ['Q12097', 'Q116'], gender: 'Q6581072', exclude: 'Q39018' },
   'Emperor': 'Q39018',
   'Scientist': 'Q1650915',
   'Philosopher': 'Q4964182',
@@ -116,6 +118,10 @@ function renderPills() {
   });
 }
 
+function removePill(label) {
+  pillsEl.querySelectorAll('.pill').forEach((p) => { if (p.textContent === label) p.remove(); });
+}
+
 function selectOccupation(label) {
   if (label === currentOccupation && rosterEl.children.length) return;
   currentOccupation = label;
@@ -128,14 +134,26 @@ function selectOccupation(label) {
 }
 
 /* ---------- Wikidata engine ---------- */
-function buildQuery(qcode) {
+function occConfig(label) {
+  const c = OCCUPATIONS[label];
+  return typeof c === 'string' ? { occ: [c] } : c;
+}
+
+function buildQuery(label) {
+  const c = occConfig(label);
+  const values = c.occ.map((q) => 'wd:' + q).join(' ');
+  const gender = c.gender ? `?person wdt:P21 wd:${c.gender} .` : '';
+  const exclude = c.exclude ? `FILTER NOT EXISTS { ?person wdt:P106 wd:${c.exclude} . }` : '';
   return `
 SELECT ?person ?personLabel ?wikiTitle ?sitelinks ?image WHERE {
   {
     SELECT ?person ?wikiTitle ?sitelinks (SAMPLE(?img) AS ?image) WHERE {
+      VALUES ?occ { ${values} }
       ?person wdt:P31 wd:Q5 ;
-              wdt:P106 wd:${qcode} ;
+              wdt:P106 ?occ ;
               wikibase:sitelinks ?sitelinks .
+      ${gender}
+      ${exclude}
       ?article schema:about ?person ;
                schema:isPartOf <https://en.wikipedia.org/> ;
                schema:name ?wikiTitle .
@@ -151,13 +169,13 @@ ORDER BY DESC(?sitelinks)`;
 }
 
 async function fetchRoster(label) {
-  const key = 'tf-roster-' + OCCUPATIONS[label];
+  const key = 'tf2-roster-' + label;
   try {
     const cached = JSON.parse(localStorage.getItem(key));
     if (cached && Date.now() - cached.t < CACHE_TTL) return cached.data;
   } catch (e) { /* ignore */ }
 
-  const url = `${SPARQL_ENDPOINT}?format=json&query=${encodeURIComponent(buildQuery(OCCUPATIONS[label]))}`;
+  const url = `${SPARQL_ENDPOINT}?format=json&query=${encodeURIComponent(buildQuery(label))}`;
   const res = await fetch(url, { headers: { Accept: 'application/sparql-results+json' } });
   if (!res.ok) throw new Error('Wikidata responded with ' + res.status);
   const json = await res.json();
@@ -170,6 +188,7 @@ async function fetchRoster(label) {
     image: b.image ? commonsThumb(b.image.value, 400) : null
   })).filter((p) => !seen.has(p.title) && seen.add(p.title));
 
+  if (!data.length) return data; // never cache empty results
   try { localStorage.setItem(key, JSON.stringify({ t: Date.now(), data })); } catch (e) { /* quota */ }
   return data;
 }
@@ -209,6 +228,9 @@ async function loadRoster(label) {
     if (req !== rosterRequest) return;
     if (!people.length) {
       rosterEl.replaceChildren();
+      removePill(label);
+      rosterTitle.textContent = 'Select an occupation';
+      currentOccupation = null;
       showStatus(`No figures found for ${label}. Pick another occupation.`);
       return;
     }
