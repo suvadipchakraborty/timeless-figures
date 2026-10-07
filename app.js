@@ -9,10 +9,6 @@ const ROSTER_SIZE = 20;
 
 // Occupation label -> Wikidata Q-code
 const OCCUPATIONS = {
-  // Kings/Queens: Wikidata rarely tags people as "king"/"queen" directly, so we use
-  // occupation "monarch" (Q116) + "king" (Q12097) and split by gender.
-  'King': { occ: ['Q12097', 'Q116'], gender: 'Q6581097', exclude: 'Q39018' },
-  'Queen': { occ: ['Q12097', 'Q116'], gender: 'Q6581072', exclude: 'Q39018' },
   'Emperor': 'Q39018',
   'Scientist': 'Q1650915',
   'Philosopher': 'Q4964182',
@@ -25,7 +21,16 @@ const OCCUPATIONS = {
   'Poet': 'Q49757',
   'Writer': 'Q36180',
   'Explorer': 'Q11900058',
-  'Architect': 'Q42973'
+  'Architect': 'Q42973',
+  'Chemist': 'Q593644',
+  'Biologist': 'Q864503',
+  'Engineer': 'Q81096',
+  'Sculptor': 'Q1281618',
+  'Economist': 'Q188094',
+  'Actor': 'Q33999',
+  'Singer': 'Q177220',
+  'Film Director': 'Q2526255',
+  'Military Officer': 'Q189290'
 };
 
 /* ---------- DOM ---------- */
@@ -128,7 +133,6 @@ function selectOccupation(label) {
   pillsEl.querySelectorAll('.pill').forEach((p) => {
     const on = p.textContent === label;
     p.setAttribute('aria-selected', String(on));
-    if (on) p.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
   });
   loadRoster(label);
 }
@@ -221,7 +225,7 @@ function showStatus(message, retry) {
 async function loadRoster(label) {
   const req = ++rosterRequest;
   statusEl.hidden = true;
-  rosterTitle.textContent = `Greatest ${label === 'Queen' ? 'Queens' : label.toLowerCase() === 'king' ? 'Kings' : label + 's'}`;
+  rosterTitle.textContent = `Greatest ${label}s`;
   showSkeleton();
   try {
     const people = await fetchRoster(label);

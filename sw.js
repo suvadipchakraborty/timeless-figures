@@ -1,4 +1,4 @@
-const VERSION = 'v2';
+const VERSION = 'v3';
 const STATIC_CACHE = `timeless-static-${VERSION}`;
 const FONT_CACHE = `timeless-fonts-${VERSION}`;
 const ASSETS = [

@@ -49,29 +49,21 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 /* Occupation pills */
 .pill-wrap {
-  position: sticky;
-  top: env(safe-area-inset-top, 0px);
-  z-index: 5;
-  margin: 0 -18px;
-  padding: 10px 18px;
-  background: linear-gradient(var(--marble) 82%, rgba(249,246,240,0));
+  margin: 0;
+  padding: 10px 0;
 }
 .pills {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
-  overflow-x: auto;
-  scrollbar-width: none;
-  scroll-snap-type: x proximity;
   padding: 2px 0;
 }
-.pills::-webkit-scrollbar { display: none; }
 .pill {
   flex: 0 0 auto;
-  scroll-snap-align: start;
   background: transparent;
   border: 1px solid var(--line);
   color: var(--sepia);
-  padding: 8px 16px;
+  padding: 7px 13px;
   border-radius: 999px;
   font-weight: 500;
   font-size: 0.92rem;
